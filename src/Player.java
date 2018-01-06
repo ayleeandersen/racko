@@ -39,8 +39,10 @@ public class Player {
      */
     public Player() {
 
-        //TODO: INHERIT FROM GAME CLASS AND THEN OVERRIDE DEAL CARDS, PRINT BOARD AND PRINT MENU ETC....
+        //INHERIT FROM GAME CLASS AND THEN OVERRIDE DEAL CARDS, PRINT BOARD AND PRINT MENU ETC....
         //Make a deck class and inherit the deck
+
+        Cards cards = new Cards();
 
         for (int i = 0; i <= 60; i++) { drawPile.add(i); }
         Collections.shuffle(drawPile);
