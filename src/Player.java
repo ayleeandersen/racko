@@ -10,14 +10,6 @@ import java.util.Scanner;
  */
 public class Player {
     /**
-     * Holds the cards that are in the draw pile.
-     */
-    private ArrayList<Integer> drawPile = new ArrayList<>();
-    /**
-     * Holds the cards that have been taken from the draw pile or from the player's hand and discarded.
-     */
-    private ArrayList<Integer> discardPile = new ArrayList<>();
-    /**
      * Contains Player 1's cards.
      */
     private ArrayList<Integer> player1Cards = new ArrayList<>();
@@ -33,19 +25,12 @@ public class Player {
      * Remains false until the player gets a racko and wins the game.
      */
     private boolean racko = false;
-
     /**
      * Constructor calls shuffles the cards and then calls the dealCards function and then the printMenu function.
      */
     public Player() {
-
         //INHERIT FROM GAME CLASS AND THEN OVERRIDE DEAL CARDS, PRINT BOARD AND PRINT MENU ETC....
-        //Make a deck class and inherit the deck
-
-        Cards cards = new Cards();
-
-        for (int i = 0; i <= 60; i++) { drawPile.add(i); }
-        Collections.shuffle(drawPile);
+        Cards.createDrawPile();
         dealCards();
         printMenu();
     }
@@ -55,21 +40,21 @@ public class Player {
      * Then 9 more cards are drawn from the pile and put into the user's hand.
      */
     private void dealCards() {
-        System.out.println("Your first card is a " + drawPile.get(0) + ".");
+        System.out.println("Your first card is a " + Cards.getCardFromDrawPile(0) + ".");
         System.out.println("1 - Place this card at the bottom (smallest number).");
         System.out.println("2 - Place this card at the top (biggest number).");
         String input = sc.nextLine();
 
         if (input.equals("1")) {
             for (int count = 0; count < NUM_CARDS; count++) {
-                player1Cards.add(drawPile.get(0));
-                drawPile.remove(0);
+                player1Cards.add(Cards.getCardFromDrawPile(0));
+                Cards.removeCardFromDrawPile(0);
             }
         }
         else if (input.equals("2")) {
             for (int count = NUM_CARDS - 1; count >= 0; count--) {
-                player1Cards.add(drawPile.get(count));
-                drawPile.remove(count);
+                player1Cards.add(Cards.getCardFromDrawPile(count));
+                Cards.removeCardFromDrawPile(count);
             }
         }
         else {
@@ -77,8 +62,8 @@ public class Player {
             dealCards();
         }
 
-        discardPile.add(drawPile.get(0));
-        drawPile.remove(0);
+        Cards.addCardToDiscardPile(Cards.getCardFromDrawPile(0));
+        Cards.removeCardFromDrawPile(0);
 
         System.out.println();
     }
@@ -106,20 +91,20 @@ public class Player {
         printBoard();
 
         System.out.println("\nPlease draw a card.");
-        System.out.println("1 - Take " + discardPile.get(discardPile.size() - 1) + " from the discard pile.");
+        System.out.println("1 - Take " + Cards.getCardFromDiscardPile(Cards.discardPileSize() - 1) + " from the discard pile.");
         System.out.println("2 - Take a card from the draw pile.");
 
         String line = sc.nextLine();
 
         int card;
         if (line.equals("1")) {
-            card = discardPile.get(discardPile.size() - 1);
-            discardPile.remove(discardPile.size() - 1);
+            card = Cards.getCardFromDiscardPile(Cards.discardPileSize() - 1);
+            Cards.removeCardFromDiscardPile(Cards.discardPileSize() - 1);
             cardAction(card);
         }
         else if (line.equals("2")) {
-            card = drawPile.get(0);
-            drawPile.remove(0);
+            card = Cards.getCardFromDrawPile(0);
+            Cards.removeCardFromDrawPile(0);
             cardAction(card);
         }
         else {
@@ -149,7 +134,7 @@ public class Player {
             placeCard(card);
         }
         else if (line.equals("2")) {
-            discardPile.add(card);
+            Cards.addCardToDiscardPile(card);
         }
         else {
             System.out.println("Invalid input. Please enter a 1 or a 2.\n");
@@ -175,7 +160,7 @@ public class Player {
             int index = (intInput / 5) - 1;
             int oldCard = player1Cards.get(index);
             player1Cards.set(index, card);
-            discardPile.add(oldCard);
+            Cards.addCardToDiscardPile(oldCard);
         }
         else {
             System.out.println("Invalid input. Please choose a slot.\n");
